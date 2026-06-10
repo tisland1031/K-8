@@ -1,0 +1,24 @@
+kubectl apply -f log-cleanup.yaml
+
+# Wait a minute for it to show up
+
+kubectl get jobs
+kubectl get pods -o wide
+
+# Expected output after about 10 minutes...
+NAME                              READY   STATUS      RESTARTS   AGE    IP            NODE               NOMINATED NODE   READINESS GATES
+host-log-cleanup-29367900-pq4tk   0/1     Completed   0          6m2s   10.244.1.39   ip-172-31-23-216   <none>           <none>
+host-log-cleanup-29367905-r4t9t   0/1     Completed   0          62s    10.244.1.40   ip-172-31-23-216   <none>           <none>
+
+kubectl logs host-log-cleanup-29367900-pq4tk
+
+# Output ...
+--- Starting Daily Host Log Cleanup ---
+Targeting logs older than +7 days in directory: /host/var/log
+Files to be deleted (simulated):
+/host/var/log/apport.log
+/host/var/log/landscape/sysinfo.log
+/host/var/log/unattended-upgrades/unattended-upgrades-shutdown.log
+--- Cleanup Simulation Complete. ---
+
+kubectl delete cronjob host-log-cleanup

@@ -1,0 +1,8 @@
+kubectl apply -f resource-demo-pod.yaml
+
+kubectl get pods -o wide 
+
+kubectl logs resource-demo-pod
+
+# Cleanup
+kubectl delete pod resource-demo-pod

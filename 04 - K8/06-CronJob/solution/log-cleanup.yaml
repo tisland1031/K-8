@@ -1,0 +1,52 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: host-log-cleanup
+spec:
+  # Minute, Hour, Day of Month, Month, Day of Week
+  schedule: "*/2 * * * *"   # Run every 2 minutes
+  
+  jobTemplate:
+    spec:
+      backoffLimit: 3
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: cleanup-runner
+            image: busybox:latest
+            
+            # The command is now targeted at the mounted host directory
+            command: ["/bin/sh", "-c"]
+            args:
+            - |
+              MOUNT_PATH="/host/var/log";
+              DAYS_OLD="+7";
+              
+              echo "--- Starting Daily Host Log Cleanup ---";
+              echo "Targeting logs older than ${DAYS_OLD} days in directory: ${MOUNT_PATH}";
+              
+              # Find and list the files older than 7 days (simulation)
+              echo "Files to be deleted (simulated):";
+              find ${MOUNT_PATH} -type f -mtime ${DAYS_OLD} -name "*.log" -print;
+
+              # Real cleanup command would be:
+              # find ${MOUNT_PATH} -type f -mtime ${DAYS_OLD} -name "*.log" -delete;
+              
+              echo "--- Cleanup Simulation Complete. ---";
+
+            # --- Critical: Mount the Host's Directory ---
+            volumeMounts:
+            - name: host-logs
+              mountPath: /host/var/log  # Mount the host directory here
+              readOnly: false           # Must be writable for deletion
+              
+            securityContext:
+              runAsUser: 0 # Run as root inside the container
+              
+          # --- Define the HostPath Volume ---
+          volumes:
+          - name: host-logs
+            hostPath:
+              path: /var/log # The actual directory on the EC2 node
+              type: Directory

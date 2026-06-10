@@ -1,0 +1,15 @@
+Lab 06 Instructions - Job
+===============================
+- Relace ??? with your values in .yaml file
+
+kubectl get jobs
+
+I want you to ...
+- apply the pod spec
+
+- look at logs, look at kubectl description of jab
+
+- delete the cronjob
+kubectl delete cronjob host-log-cleanup
+
+*SEND SCREEN SHOT OF LOGS

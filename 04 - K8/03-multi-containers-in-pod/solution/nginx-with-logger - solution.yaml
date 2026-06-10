@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-with-logger
+  labels:
+    app: nginx-logger-demo
+spec:
+  containers:
+    # Primary NGINX container
+    - name: nginx
+      image: nginx:latest
+      ports:
+        - containerPort: 80
+      volumeMounts:
+        - name: nginx-logs
+          mountPath: /var/log/nginx
+      command: ["/bin/sh"]
+      args:
+        - -c
+        - |
+          mkdir -p /var/log/nginx && \
+          nginx -g 'daemon off;' \
+          > /var/log/nginx/access.log 2> /var/log/nginx/error.log
+
+    # Fluentd sidecar container
+    - name: fluentd-sidecar
+      image: fluent/fluentd:latest
+      volumeMounts:
+        - name: nginx-logs
+          mountPath: /var/log/nginx
+      command: ["/bin/sh"]
+      args:
+        - -c
+        - |
+          mkdir -p /tmp/fluentd && \
+          cat <<'EOF' > /tmp/fluentd/fluent.conf
+          <source>
+            @type tail
+            path /var/log/nginx/access.log,/var/log/nginx/error.log
+            pos_file /tmp/fluentd/fluentd.pos
+            tag nginx.logs
+            read_from_head true
+            <parse>
+              @type none
+            </parse>
+          </source>
+
+          <match nginx.logs>
+            @type stdout
+          </match>
+          EOF
+
+          fluentd -c /tmp/fluentd/fluent.conf -v
+
+  # Shared volume for logs
+  volumes:
+    - name: nginx-logs
+      emptyDir: {}

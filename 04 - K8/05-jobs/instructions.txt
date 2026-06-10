@@ -1,0 +1,20 @@
+Lab 05 Instructions - Job
+==========================
+
+I want you to ...
+- apply the job spec
+
+#Retrieve job status
+kubectl get jobs
+
+- determine what went wrong?
+   - look at logs, events, description of job ...
+   kubectl logs web-healthcheck-job-????
+   kubectl get events
+   kubectl describe job web-healthcheck-job
+
+#Delete the job
+kubectl delete job web-healthcheck-job
+
+#Can change yaml file and swap to github.com and will get HTTP 200 code
+#instead of 301 which google gives back (HTTP 301 = re-direct)

@@ -1,0 +1,10 @@
+Lab 04 Instructions - Resoure Quotas
+======================================
+- Relace ???? with your quotas
+
+I want you to ...
+- apply the pod spec
+- list pods
+- determine what went wrong?
+   - look at logs, look at kubectl description
+- delete the pod

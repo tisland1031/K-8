@@ -1,0 +1,27 @@
+Lab: Sidecar Design Pattern in Kubernetes (log aggregation)
+
+Answers: 
+
+kubectl apply -f nginx-with-logger.yaml 
+kubectl get pods -o wide
+kubectl exec -it nginx-with-logger -c nginx -- curl localhost
+kubectl logs -f pod/nginx-with-logger -c fluentd-sidecar
+kubectl describe pod/nginx-with-logger
+kubectl delete pod nginx-with-logger
+
+
+Q1. Do multiple container in a pod, share the same network stack by default?
+
+    Yes. They share the same network namespace, meaning they share one IP address, loopback interface, and port space.
+
+Q2. Do multiple container in a pod, share the same storage by default?
+
+    No. Their filesystems are isolated by default. To share storage, you must explicitly configure a shared Kubernetes volume.
+
+Q3. Does each container in pod need to have a different port number or can they be the same?
+
+    They must have different port numbers. Since they share a single network stack, port collisions will cause failures.
+
+Q4. Does each container in pod get a differnet ip?
+
+    No. The Pod receives one unique IP address, which is shared by all of its internal containers simultaneously.

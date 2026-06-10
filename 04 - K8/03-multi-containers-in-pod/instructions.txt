@@ -1,0 +1,34 @@
+Lab: Sidecar Design Pattern in Kubernetes (log aggregation)
+
+FYI: In this demo, fluentd reads the nginx logs prints them to standard output (@type stdout). In a production environment, you would configure this to stream those logs to a centralized logging system like AWS CloudWatch.
+
+1. Fill out missing TODO's in pod manifest (yaml file)
+
+2. How to read/ingest the yaml configuration?
+   kubectl ??? -f nginx-with-logger.yaml
+
+3. List all pods in wide format   
+   kubectl get pods -o wide
+   
+4. Execute the "curl localhost" command in the nginx container
+   running in the pod. 
+   kubectl exec -it nginx-with-logger -c nginx ??? curl localhost
+   
+5. View logs captured from container "fluentd-sidecar" in pod
+   kubectl logs -f pod/nginx-with-logger -??? fluentd-sidecar
+   
+6. Describe pod "nginx-with-logger" and take a look
+   kubectl describe pod/nginx-with-logger
+   
+7. Cleanup   
+   kubectl delete pod nginx-with-logger
+   
+Questions
++++++++++++
+Q1. Do multiple container in a pod, share the same network stack by default?
+
+Q2. Do multiple container in a pod, share the same storage by default?
+
+Q3. Does each container in pod need to have a different port number or can they be the same?
+
+Q4. Does each container in pod get a differnet ip? 

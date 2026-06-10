@@ -1,0 +1,25 @@
+Lab 05 Instructions - Job
+==========================
+
+I want you to ...
+- apply the pod spec
+kubectl apply -f job-example.yaml
+
+
+# Will see eventually (due to backoff algo.) 3 pods trying to get a http status of 200 from google
+# since failing each time. Re-execute command every 20 seconds to see extra pods show up
+kubectl get pods
+
+# Will see status=Failed
+kubectl get jobs
+
+# Check return code
+kubectl logs web-healthcheck-job-bhprq  (Note: "bhprq" will be differnet for you, since randomly generated)
+
+# Check Job Events
+# Will see "Warning   BackoffLimitExceeded"
+kubectl get events 
+
+kubectl describe job web-healthcheck-job
+
+kubectl delete job web-healthcheck-job

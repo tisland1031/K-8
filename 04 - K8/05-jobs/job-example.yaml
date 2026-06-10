@@ -1,0 +1,30 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: web-healthcheck-job
+  labels:
+    app: web-healthcheck
+spec:
+  backoffLimit: 2  # Retries up to 2 times if fails
+  completions: 1   # Number of successful pod runs finish before the Job itself is marked as complete
+  parallelism: 1   # Number of pods allowed to run simultaneously
+  template:
+    metadata:
+      labels:
+        app: web-healthcheck
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: web-healthcheck
+        image: curlimages/curl:latest
+        command: ["sh", "-c"]
+        args:
+          - |
+            echo "Checking website health..."
+            if curl -s -o /dev/null -w "%{http_code}" https://google.com | grep -q "200"; then
+              echo "My Website is healthy"
+              exit 0
+            else
+              echo "Website returned non-200 status"
+              exit 1
+            fi

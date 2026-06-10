@@ -1,0 +1,23 @@
+Your crictl command needs to be installed first. Install via script ./install-crictl.sh
+Then execute commands ...
+
+# Check the version information of crictl and the underlying container runtime.
+crictl version
+
+# List all containers on the node, including both running and stopped ones.
+crictl ps -a
+
+# List all container images currently stored on the local node.
+crictl images
+
+# Pull the specified NGINX image from a remote registry to the node.
+crictl pull nginx
+
+# Remove the NGINX container image from the local node's storage.
+crictl rmi nginx
+
+# List all pods (pod sandboxes) currently managed by the runtime interface.
+crictl pods
+
+# Display detailed runtime status, networking configuration, and system information.
+crictl info
