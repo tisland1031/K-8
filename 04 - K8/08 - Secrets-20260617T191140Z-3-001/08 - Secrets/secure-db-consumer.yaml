@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: secure-db-consumer
+spec:
+  containers:
+  - name: db-app-runner
+    image: busybox:latest
+    command: ["/bin/sh", "-c", "echo 'Connecting with secure credentials...' && sleep 3600"]
+    
+    env:
+      - name: MYSQL_USER # Environment variable name
+        valueFrom:
+          secretKeyRef:
+            name: mysql-credentials # Name of the Secret
+            key: DB_USERNAME # Key inside the Secret
+      - name: MYSQL_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: mysql-credentials
+            key: DB_PASSWORD
+

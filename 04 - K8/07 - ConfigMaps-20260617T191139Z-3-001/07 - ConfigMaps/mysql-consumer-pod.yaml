@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: db-connect-consumer
+spec:
+  containers:
+  - name: db-app-runner
+    image: busybox:latest
+    command: ["/bin/sh", "-c", "echo 'Application ready to connect to MySQL...' && sleep 3600"]
+    
+    # ----------------------------------------------------
+    # 1. Consume MySQL Settings as Environment Variables
+    # ----------------------------------------------------
+    env:
+      - name: MYSQL_HOST
+        valueFrom:
+          configMapKeyRef:
+            name: mysql-app-config
+            key: DB_HOST
+      - name: MYSQL_DATABASE
+        valueFrom:
+          configMapKeyRef:
+            name: mysql-app-config
+            key: DB_NAME
+      - name: MYSQL_MAX_POOL
+        valueFrom:
+          configMapKeyRef:
+            name: mysql-app-config
+            key: DB_MAX_POOL_SIZE
+            
+    # ---------------------------
+    # 2. Consume Properties File 
+    # ---------------------------
+    volumeMounts:
+      - name: config-volume
+        mountPath: /app/config
+        readOnly: true
+        
+  volumes:
+    - name: config-volume
+      configMap:
+        name: mysql-app-config
+        items:
+          - key: application.properties
+            path: application.properties

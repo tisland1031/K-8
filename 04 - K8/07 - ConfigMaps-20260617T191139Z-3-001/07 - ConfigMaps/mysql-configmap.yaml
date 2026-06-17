@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-app-config
+data:
+  # DATABASE CONNECTION PARAMETERS (Used for environment variables)
+  # NOTE: The password (DB_PASSWORD) should eventually come from a Secret, not a ConfigMap!
+  DB_HOST: "mysql-service.database-ns.svc.cluster.local" # FQDN for the MySQL Service
+  DB_PORT: "3306"
+  DB_NAME: "inventory_prod"
+  DB_MAX_POOL_SIZE: "30"
+  
+  LOG_LEVEL: "INFO"
+  
+  application.properties: |
+    # Database connection string template for JDBC driver
+    spring.datasource.url=jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    spring.datasource.max-pool-size=${DB_MAX_POOL_SIZE}

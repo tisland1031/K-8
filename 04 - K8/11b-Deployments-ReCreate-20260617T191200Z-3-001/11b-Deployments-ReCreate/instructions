@@ -1,0 +1,37 @@
+Q - How is Recreate deployment different than Rolling deployment?
+Q - Why would I use this deployment type?
+
+- Go in file "recreate-demo.yaml and replace TODO with correct deployment type"
+
+kubectl apply -f recreate-demo.yaml
+
+kubectl get pods -l app=maintenance-app -L version
+
+#Update yaml image to 1.36 and v2 instead of CLI command ...
+# kubectl set image deployment/maintenance-app-deployment app-container=busybox:1.36
+
+Q - Should I instead be executed these imperative commands to make changes in prod or should I instead modify yaml manifest?
+
+#  Monitor deployment
+Q - before you start, what do you expect to happen?
+
+kubectl get pods -l app=maintenance-app -L version --watch
+kubectl get pods -l app=maintenance-app -L version
+
+kubectl rollout status deployment/maintenance-app-deployment
+
+kubectl describe deployment maintenance-app-deployment
+
+kubectl rollout history deployment/maintenance-app-deployment
+
+# go back to previous version and monitor deployment
+kubectl rollout undo deployment/maintenance-app-deployment
+kubectl get pods -l app=maintenance-app -L version --watch
+
+# list deployment history
+kubectl rollout history deployment/maintenance-app-deployment --revision=2
+
+# Cleanup
+kubectl delete deployment maintenance-app-deployment
+
+

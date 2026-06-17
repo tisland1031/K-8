@@ -1,0 +1,24 @@
+kubectl apply -f nginx-rs.yaml
+
+# Check the ReplicaSet status
+kubectl get rs -o wide
+
+# Check the Pods created by the ReplicaSet
+kubectl get pods -l app=nginx-demo
+
+# Delete 2 of the pods to see self healing in action  (you need to list the pods to get 2 of their id's for following delete command)
+kubectl delete pod $POD_TO_DELETE1
+kubectl delete pod $POD_TO_DELETE2
+
+
+# Observe Self-Healing
+kubectl get pods -l app=nginx-demo --watch
+
+# Scale the desired number of replicas to 5
+kubectl scale rs nginx-replicaset --replicas=5
+
+# See events, meta data etc ..
+kubectl describe rs nginx-replicaset
+
+#Cleanup
+kubectl delete rs nginx-replicaset

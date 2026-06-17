@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kubernetes.io/change-cause: "Company website using nginx v1.0"
+  name: nginx-web-deployment
+  labels:
+    app: nginx-web
+spec:
+  replicas: 3
+  revisionHistoryLimit: 10  #default, keeps upto 10 replicaSets for rollback history, undo
+  selector:
+    matchLabels:
+      app: nginx-web
+      
+  strategy:
+    type: RollingUpdate
+    
+    rollingUpdate:
+      maxSurge: 25%       # Allows 1 extra Pod out of 3 to be created during update  (4 pods temporarily)
+      maxUnavailable: 25% # Allows 1 Pod out of 3 to be unavailable during update (rounds down to 1)
+
+  template:
+    metadata:
+      labels:
+        app: nginx-web
+        version: v1
+    spec:
+      containers:
+      - name: nginx-container
+        image: nginx:1.24
+        ports:
+        - containerPort: 80
+
+        readinessProbe:
+          # Use an HTTP GET request to check the health endpoint
+          httpGet:
+            path: /
+            port: 80
+          # Initial delay before the first check (seconds)
+          initialDelaySeconds: 5
+          # How often to perform the check (seconds)
+          periodSeconds: 5
+          # Number of successes required to pass the probe
+          successThreshold: 3
+          # Number of failures before the Pod is marked Not Ready
+          failureThreshold: 3 

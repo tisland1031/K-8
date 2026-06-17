@@ -1,0 +1,21 @@
+#apply secret object
+kubectl apply -f db-secret.yaml 
+
+#View
+kubectl get secrets -o wide
+kubectl describe secret mysql-credentials
+
+#Start consumer pod to consume and mount the secret
+kubectl apply -f secure-db-consumer.yaml 
+
+# View env vars in pods container
+kubectl exec secure-db-consumer -- printenv
+
+#Cleanup
+kubectl delete pod secure-db-consumer
+kubectl delete secret mysql-credentials
+
+
+Q - Are secrets encrypted by default and why?
+
+Q - How are secrets mounted in container?

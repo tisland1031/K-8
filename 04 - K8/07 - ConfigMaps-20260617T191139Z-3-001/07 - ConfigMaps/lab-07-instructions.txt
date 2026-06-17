@@ -1,0 +1,20 @@
+# Applyy configMap object and view
+kubectl apply -f mysql-configmap.yaml
+kubectl get configmaps
+
+# View how stored in etcd
+kubectl get configmaps mysql-app-config -o yaml
+kubectl describe configmaps mysql-app-config
+
+# Start pod which consumes ConfigMap
+kubectl apply -f mysql-consumer-pod.yaml 
+
+# View consumer pod and view the configMap within it (env vars and config file)
+kubectl get pods
+kubectl exec db-connect-consumer -- printenv 
+kubectl exec db-connect-consumer -- cat /app/config/application.properties
+
+
+Q - Is a ConfigMap more portable than a mounted hostPath volume? why?
+
+Q - Where is ConfigMap stored?

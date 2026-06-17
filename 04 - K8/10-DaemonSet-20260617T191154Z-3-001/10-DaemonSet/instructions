@@ -1,0 +1,38 @@
+Q - What is a taint?
+Q - How is it that a Manager node never gets workloads scheduled on it?
+
+
+# To see taints on node ..
+kubectl get nodes -o wide
+kubectl describe node <node-name> | grep -A5 Taints
+
+Q - Can we schedule a workload app on a Manager node? How?
+  - go replace TODO in node-exporter-ds.yaml file
+
+# Apply (create or update) the DaemonSet
+kubectl apply -f node-exporter-ds.yaml
+
+# List all DaemonSets (in current namespace)
+kubectl get daemonsets
+
+Q - Is there an alias for "daemonsets"?
+
+# List all DaemonSets with more detail
+kubectl get daemonsets -o wide
+
+# Show detailed info about this DaemonSet
+kubectl describe daemonset node-exporter
+
+# List all Pods created by this DaemonSet
+kubectl get pods -l app=prometheus,component=node-exporter -o wide
+
+
+# Access Prometheus metrics from node host
+curl http://localhost:9100/metrics
+
+Q - Can you execute this command on each node in Cluster? Why?
+
+
+# Delete the DaemonSet
+kubectl delete -f node-exporter-ds.yaml
+

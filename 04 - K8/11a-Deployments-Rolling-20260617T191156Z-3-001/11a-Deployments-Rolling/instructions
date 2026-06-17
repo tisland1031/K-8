@@ -1,0 +1,55 @@
+Q - What is a Readiness Probe and why is it cool?
+
+# Apply deployment object
+kubectl apply -f nginx-deployment.yaml
+
+# Verify the Pods: Check that 3 Pods are running, and confirm the version label.
+kubectl get pods -l app=nginx-web -L version
+
+# Take some seconds for all 3 to come up, view deployment
+kubectl get deployment nginx-web-deployment -o wide
+kubectl describe deployment nginx-web-deployment
+
+# update the version label and image tag in nginx-deployment.yaml
+  - change label to v2
+  - change image: nginx:1.25
+  
+# Deploy update
+kubectl apply -f nginx-deployment.yaml
+
+# Observe the Rolling Update
+# Watch the Pods in a separate terminal. You will see Kubernetes gracefully replace the old Pods with new ones, one by one.
+kubectl get pods -l app=nginx-web -L version -o wide --watch
+
+# Confirm all 3 are at v2 under VERSION column
+kubectl get pods -l app=nginx-web -L version
+
+# Verify Final State
+# Check Deployment Status (Should show 3/3 updated):
+kubectl rollout status deployment/nginx-web-deployment
+
+#Expected Output ...
+# deployment "nginx-web-deployment" successfully rolled out
+
+# View deployment history
+kubectl rollout history deployment/nginx-web-deployment
+
+# ROLLBACK to previous version
+kubectl rollout undo deployment/nginx-web-deployment
+
+# Confirm all 3 are at v1 again by looking under VERSION column, which command should you execute?
+
+# Now, Rollback to a Specific Revision (you pick, replace ??? with number)
+kubectl rollout undo deployment/nginx-web-deployment --to-revision=???
+
+# watch deployment and vire info
+kubectl get pods -l app=nginx-web -L version --watch
+kubectl rollout history deployment/nginx-web-deployment
+
+# Get more info from rollout history to see image name (you pick, replace ??? with number)
+kubectl rollout history deployment/nginx-web-deployment --revision=???
+kubectl rollout history deployment/nginx-web-deployment --revision=???
+
+# Cleanup
+kubectl delete deployment nginx-web-deployment
+

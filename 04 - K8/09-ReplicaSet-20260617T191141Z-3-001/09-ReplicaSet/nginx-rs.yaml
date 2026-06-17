@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: nginx-replicaset
+  labels:
+    app: nginx-demo
+spec:
+  # This is the desired state: always keep 3 copies running
+  replicas: 3 
+  
+  selector:
+    matchLabels:
+      app: nginx-demo
+  
+  template: # This is the Pod template
+    metadata:
+      labels:
+        app: nginx-demo
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest # The application image
+        ports:
+        - containerPort: 80
